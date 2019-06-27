@@ -1,0 +1,1 @@
+python ..\src\comap_hr_scan\rename_pdfs.py ..\samples out
