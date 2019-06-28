@@ -13,7 +13,7 @@ from pdf2image import convert_from_path
 
 
 def convert_pdf_to_jpg(in_pdf, out_jpg):
-    pages = convert_from_path(in_pdf, 500)
+    pages = convert_from_path(in_pdf, first_page=0, last_page=0)
     if len(pages) > 0:
         pages[0].save(out_jpg, 'JPEG')
         return True
