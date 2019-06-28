@@ -32,12 +32,14 @@ def process_pdfs(in_dir, out_dir, name_transform_method):
         print(f'Processing {file}')
         # Convert PDF to JPG
         img_file = os.path.join(tmp_dir, 'img.jpg')
-        if not convert_pdf_to_jpg(file, img_file):
-            sys.exit(1)
-        # Read lines from file
-        lines = pytesseract.image_to_string(Image.open(img_file), lang='ces').split('\n')
-        # Transform file name
-        new_name = name_transform_method(lines)
+        if convert_pdf_to_jpg(file, img_file):
+            # Read lines from file
+            lines = pytesseract.image_to_string(Image.open(img_file), lang='ces').split('\n')
+            # Transform file name
+            new_name = name_transform_method(lines)
+        else:
+            print('Cannot transform file name. Using original name')
+            new_name = os.path.basename(file)
         # Copy file to new location with new name
         new_file = os.path.join(out_dir, new_name)
         print(f'Coping {file} into {new_file}')
