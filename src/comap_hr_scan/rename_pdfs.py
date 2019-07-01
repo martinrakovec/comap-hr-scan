@@ -24,6 +24,9 @@ def convert_pdf_to_jpg(in_pdf, out_jpg):
 
 def process_pdfs(in_dir, out_dir, name_transform_method):
     tmp_dir = tempfile.mkdtemp()
+    if not os.path.exists(in_dir) or not os.path.isdir(in_dir):
+        print(f'Directory "{in_dir}" does not exist or is not directory')
+        return False
     if not os.path.exists(out_dir):
         os.mkdir(out_dir)
     in_dir = os.path.abspath(in_dir)
@@ -41,18 +44,27 @@ def process_pdfs(in_dir, out_dir, name_transform_method):
             print('Cannot transform file name. Using original name')
             new_name = os.path.basename(file)
         # Copy file to new location with new name
-        new_file = os.path.join(out_dir, new_name)
+        new_file = os.path.join(out_dir, f'{new_name}.pdf')
+        nf_c = 0
+        while os.path.exists(new_file):
+            nf_c += 1
+            new_file = os.path.join(out_dir, f'{new_name}_{nf_c}.pdf')
         print(f'Coping {file} into {new_file}')
         shutil.copy(file, new_file)
     shutil.rmtree(tmp_dir)
+    return True
 
 
 def get_filename_from_pdf(lines):
-    doc_title = lines[4]
-    for line in lines[5:]:
-        if "jméno, příjmení" in line:
+    non_empty_lines = 0
+    for line in lines:
+        if line.strip() != '':
+            if non_empty_lines == 2:
+                doc_title = line.strip()
+            non_empty_lines += 1
+        if 'příjmení' in line or 'surname' in line:
             fname, sname = line.split(':')[1].strip().split(' ')
-            return f'{sname}_{doc_title}.pdf'
+            return f'{sname}_{doc_title}'
     return None
 
 

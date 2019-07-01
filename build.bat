@@ -1,2 +1,3 @@
 pyinstaller rename_pdfs.spec
-echo bin\\rename_pdfs.exe input output > dist\rename_pdfs.bat
+echo @bin\\rename_pdfs.exe "..\\Scanned documents" "..\\output"> dist\rename_pdfs.bat
+echo @pause>> dist\rename_pdfs.bat
